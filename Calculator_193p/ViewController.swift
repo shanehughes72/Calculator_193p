@@ -8,18 +8,30 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController
+{
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    @IBOutlet weak var display: UILabel!
+    
+    
+    var userIsInTheMiddleOfTypingANumber: Bool = false
+    //The colon in the declaration means “…of type…,” so the code above can be read as:
+    //“Declare a variable called display that is of type Boolean.”
+    
+    //green arrow that goes from the controller to the model
+    //var brain = CalculatorBrain()
+
+    @IBAction func appendDigit(sender: UIButton) {
+        
+        let digit = sender.currentTitle!
+        
+        if userIsInTheMiddleOfTypingANumber {
+            display.text = display.text! + digit
+        } else {
+            display.text = digit
+            userIsInTheMiddleOfTypingANumber = true
+        }
+
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 
