@@ -19,7 +19,10 @@ class ViewController: UIViewController
     //“Declare a variable called display that is of type Boolean.”
     
     //green arrow that goes from the controller to the model
-    //var brain = CalculatorBrain()
+    var brain = CalculatorBrain()
+
+  
+
 
     @IBAction func appendDigit(sender: UIButton) {
         
@@ -31,7 +34,104 @@ class ViewController: UIViewController
             display.text = digit
             userIsInTheMiddleOfTypingANumber = true
         }
-
     }
-}
+    
+    
+    
+    @IBAction func operate(sender: UIButton) {
+        
+        let operation = sender.currentTitle!
+        if userIsInTheMiddleOfTypingANumber {
+            enter()
+        }
+        
+        if let operation = sender.currentTitle{
+            if let result = brain.performOperation(operation) {
+                displayValue = result
+            } else {
+                //lame
+                displayValue = 0
+            }
+        }
+        
+        
+    }
+
+    
+    
+    
+    
+    
+    @IBAction func enter() {
+        
+        userIsInTheMiddleOfTypingANumber = false
+        //operandStack.append(displayValue)
+        // println("operandStack = \(operandStack)")
+        //arrays know how to turn themselves into strings
+        if let result = brain.pushOperand(displayValue) {
+            displayValue = result
+        } else {
+            displayValue = 0
+            //maybe an error message in the display
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+    
+
+ 
+
+ 
+
+
+
+
+
+    
+    var displayValue: Double{
+        
+        get{
+            // extra credit item look at documentation of NSNumberFormatter()
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            
+            
+        }
+        set{
+            display.text = "\(newValue)"
+            userIsInTheMiddleOfTypingANumber = false
+            
+        }
+        
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}//ViewController
 
