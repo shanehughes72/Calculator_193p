@@ -5,20 +5,25 @@
 //  Created by Worship Arts on 4/10/15.
 //  Copyright (c) 2015 Shane Hughes. All rights reserved.
 //
+// variable operands 3.mvc @ 55:45
+
 
 import Foundation
 
 class CalculatorBrain
 {
     
-    //Printable is a protocol
+    //Printable is a protocol - dealing with the computed property ( description )
+    // swift is only langugae that you can associate values withe the cases
+    // no other languages have that
+    
     private enum Op: Printable
     {
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
         
-        
+        //computed property in the enum - read only so no set, just get
         var description: String {
             get {
                 switch self{
@@ -35,20 +40,26 @@ class CalculatorBrain
     }
     
     
-    
-   
+    // gonna make it a enum instead of class and can have computed properties - not stored properties
+    // the exact same thing is: 
+  //private var opStack = Array<Op>()
     private var opStack = [Op]()
+
     
     
     
     // could make this public
     // make private stuff private first then open it up
     // as needed
-    private var knownOps = [String:Op]()
-    //same as Dictionary<String, Op>()
+    //same as:
+    //private var knownOps = Dictionary<String, Op>()
+      private var knownOps = [String:Op]()
     
+    //here is your intializer ( constructor )
+    //public - want others to make calc brains
     init() {
         //dictionaries:
+        // Closures {}
         //knownOps["×"] = Op.BinaryOperation("×") { $0 * $1 }
         //knownOps["÷"] = Op.BinaryOperation("÷") { $1 * $0 }
         //knownOps["+"] = Op.BinaryOperation("+") { $0 * $1 }
@@ -81,7 +92,7 @@ class CalculatorBrain
         learnOp(Op.BinaryOperation("-", -))
         
         
-        
+        //havent learned sqrt yet
         knownOps["√"] = Op.UnaryOperation("√", sqrt)
         //learnOp(Op.BinaryOperation("√", √))
         
@@ -89,22 +100,37 @@ class CalculatorBrain
         
         
     }
-    
+                // all arguments have the implicit let - there
+                // is a in-out thing to look up
+                // can put var in front of argument if needed
+                // structs passed by value - classes passed by reference
+                //ops is the argument
+                // is read only ummutable  passed by value array and dictionaries are structs
+                //implicit let in front of ops  esult:doesnit need to be named
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op])
-    {
+    {   // 3. Applying MVC @ 40mins
         if !ops.isEmpty {
+            // used to make a copy ( if not a class ) so we can mutate it
             var remainingOps = ops
             let op = remainingOps.removeLast()
             // switch is how you pull out the associated values in enums
             switch op {
+                // type inference. is actually Op.operand
+                          // in this space  ( let operand )is what do you want to do with the info 
+                          // we want to assign it to a constant called operand
             case .Operand(let operand):
                 return (operand, remainingOps)
                 // underbar means i dont care about that element
             case .UnaryOperation(_, let operation):
                 
                 //optional double is operand
+                // RECURSION //
                 let operandEvaluation = evaluate(remainingOps)
-                if let operand = operandEvaluation.result {
+                 // operationEvaluation is the tuple - we want the .result
+                                                   // getting the result ( see argument name in func declaration
+               // if let is turning the optional? to a double
+               if let operand = operandEvaluation.result {
+                                                // remaining ops after we recurse
                     return (operation(operand), operandEvaluation.remainingOps)
                 }
             case .BinaryOperation(_,  let operation):
@@ -122,6 +148,9 @@ class CalculatorBrain
         return (nil, ops)
     }
     
+    
+    // 3.MVC @ 54 mins
+    // and 55:30
     // has to be an optional as first operation being "+"
     // would return nil { ? is optional }
     func evaluate() -> Double? {
@@ -133,13 +162,13 @@ class CalculatorBrain
         
     }
     
-    
+    //public - want others to do this:
     func pushOperand(operand: Double) -> Double? {
         opStack.append(Op.Operand(operand))
         return evaluate()
         
     }
-    
+    //public - want others to do this:
     func performOperation(symbol:String)  -> Double? {
         
         //looking up stuff in a dictionary is square brackets
@@ -152,16 +181,6 @@ class CalculatorBrain
         return evaluate()
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
 }//CalculatorBrain

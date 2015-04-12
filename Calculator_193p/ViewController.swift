@@ -58,10 +58,6 @@ class ViewController: UIViewController
     }
 
     
-    
-    
-    
-    
     @IBAction func enter() {
         
         userIsInTheMiddleOfTypingANumber = false
@@ -77,26 +73,12 @@ class ViewController: UIViewController
         
         
         
-        
-        
-        
-        
-        
-        
     }
     
-    
-    
-
- 
-
- 
-
-
-
-
-
-    
+    // if the value of this var is tied to a value somewhere else use
+    //computed property ( setters and getters ) instead of = something use
+    // { braces and use set and get 
+    // newValue is the magic new variable in this computed property
     var displayValue: Double{
         
         get{
@@ -113,24 +95,6 @@ class ViewController: UIViewController
         
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }//ViewController
