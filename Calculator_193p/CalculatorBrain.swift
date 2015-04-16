@@ -22,6 +22,8 @@ class CalculatorBrain
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
+        case NullaryOperation(String, () -> Double)
+        
         
         //computed property in the enum - read only so no set, just get
         var description: String {
@@ -32,6 +34,9 @@ class CalculatorBrain
                 case .UnaryOperation( let symbol, _):
                     return symbol
                 case .BinaryOperation(let symbol, _):
+                    return symbol
+                    // using .OP to show the same as .NullaryOperation
+                case .NullaryOperation(let symbol, _):
                     return symbol
                 }
             }
@@ -96,10 +101,17 @@ class CalculatorBrain
         knownOps["√"] = Op.UnaryOperation("√", sqrt)
         //learnOp(Op.BinaryOperation("√", √))
         
+        knownOps["sin"] = Op.UnaryOperation("sin", sin)
+        
+        knownOps["cos"] = Op.UnaryOperation("cos", cos)
+        
+        knownOps["∏"] = Op.NullaryOperation("∏", {M_PI} )
         
         
         
-    }
+        
+        
+    }//init
                 // all arguments have the implicit let - there
                 // is a in-out thing to look up
                 // can put var in front of argument if needed
@@ -142,8 +154,13 @@ class CalculatorBrain
                         
                     }
                 }
+            case .NullaryOperation(_, let operation):
+                return (operation(), remainingOps)
+
                 
-            }
+            }//switch
+            
+        
         }
         return (nil, ops)
     }

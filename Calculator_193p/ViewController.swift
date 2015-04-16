@@ -75,14 +75,37 @@ class ViewController: UIViewController
         
     }
     
+    //TheString method rangeOfString(substring:String) mightbeofgreatuseto you for the floating point part of this assignment.
+    //It returns an Optional. If the passed String argument cannot be found in the receiver,
+    //it returns nil (otherwise don’t worry about what it returns for now).
+    
+//    if let displayText = display.text {
+//        let numberFormatter = NSNumberFormatter()
+//        numberFormatter.locale = NSLocale(localeIdentifier: "en_US")
+//        if let displayNumber = numberFormatter.numberFromString(displayText) {
+//            return displayNumber.doubleValue
+//        }
+//    }
+    
+    
+    
+    
+    
     // if the value of this var is tied to a value somewhere else use
     //computed property ( setters and getters ) instead of = something use
     // { braces and use set and get 
     // newValue is the magic new variable in this computed property
-    var displayValue: Double{
+    var displayValue: Double {
         
         get{
-            // extra credit item look at documentation of NSNumberFormatter()
+        
+            if let displayText = display.text {
+                let numberFormatter = NSNumberFormatter()
+                numberFormatter.locale = NSLocale(localeIdentifier: "en_US")
+                if let displayNumber = numberFormatter.numberFromString(displayText) {
+                    return displayNumber.doubleValue
+                }
+            }
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
             
             
