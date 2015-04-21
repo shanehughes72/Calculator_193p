@@ -60,8 +60,8 @@ class ViewController: UIViewController
             if let result = brain.performOperation(operation) {
                 displayValue = result
             } else {
-                //lame
-                displayValue = 0
+                //lame no lame with nil instead of 0
+                displayValue = nil
             }
         }
         
@@ -75,7 +75,7 @@ class ViewController: UIViewController
         //operandStack.append(displayValue)
         // println("operandStack = \(operandStack)")
         //arrays know how to turn themselves into strings
-        if let result = brain.pushOperand(displayValue) {
+        if let result = brain.pushOperand(displayValue!) {
             displayValue = result
         } else {
             displayValue = 0
@@ -106,24 +106,27 @@ class ViewController: UIViewController
     //computed property ( setters and getters ) instead of = something use
     // { braces and use set and get 
     // newValue is the magic new variable in this computed property
-    var displayValue: Double {
+    var displayValue: Double? {
         
         get{
         
-            if let displayText = display.text {
-                let numberFormatter = NSNumberFormatter()
-                numberFormatter.locale = NSLocale(localeIdentifier: "en_US")
-                if let displayNumber = numberFormatter.numberFromString(displayText) {
-                    return displayNumber.doubleValue
-                }
-            }
+            //if let displayText = display.text {
+            //    if let displayNumber = NSNumberFormatter().numberFromString(displayText) {
+            //        return displayNumber.doubleValue
+            //    }
+            //}
             
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
-            
-            
+            // optional chaining
+            return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
+
         }
         set {
-            display.text = "\(newValue)"
+            if (newValue != nil){
+                display.text = "\(newValue!)"
+            } else {
+                display.text = "0"
+            }
+            
             if let stack = brain.showSHack(){
                 if !stack.isEmpty{
                     history.text = stack + " ="
