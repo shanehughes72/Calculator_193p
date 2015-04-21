@@ -23,6 +23,7 @@ class CalculatorBrain
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
         case NullaryOperation(String, () -> Double)
+        case Variable(String)
        
         
         //computed property in the enum - read only so no set, just get
@@ -37,6 +38,8 @@ class CalculatorBrain
                     return symbol
                     // using .OP to show the same as .NullaryOperation
                 case .NullaryOperation(let symbol, _):
+                    return symbol
+                case .Variable(let symbol):
                     return symbol
                 }
             }
@@ -59,6 +62,14 @@ class CalculatorBrain
     //same as:
     //private var knownOps = Dictionary<String, Op>()
       private var knownOps = [String:Op]()
+    
+    // old skool declaration
+    var variableValues = Dictionary<String,Double>()
+    
+    
+    
+    
+    
     
     //here is your intializer ( constructor )
     //public - want others to make calc brains
@@ -162,6 +173,9 @@ class CalculatorBrain
                 }
             case .NullaryOperation(_, let operation):
                 return (operation(), remainingOps)
+                
+            case .Variable(let symbol):
+                return (nil, remainingOps)
 
                 
             }//switch
@@ -217,7 +231,11 @@ class CalculatorBrain
     }
     
     
-   
+    func pushOperand(symbol : String) -> Double? {
+        opStack.append(Op.Variable(symbol))
+        return evaluate()
+
+    }
     
     
     
