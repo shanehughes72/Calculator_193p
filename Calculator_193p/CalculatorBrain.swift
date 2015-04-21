@@ -23,7 +23,7 @@ class CalculatorBrain
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
         case NullaryOperation(String, () -> Double)
-        
+       
         
         //computed property in the enum - read only so no set, just get
         var description: String {
@@ -105,7 +105,13 @@ class CalculatorBrain
         
         knownOps["cos"] = Op.UnaryOperation("cos", cos)
         
-        knownOps["∏"] = Op.NullaryOperation("∏", {M_PI} )
+        knownOps["π"] = Op.NullaryOperation("π", {M_PI} )
+        
+        
+        // figure out the knownOps version
+        learnOp(Op.UnaryOperation("±", { -$0 }))
+        
+        
         
         
         
@@ -198,6 +204,23 @@ class CalculatorBrain
         return evaluate()
         
     }
+    
+    // .join takes array of arrays, extracts individual elements and interposes the elements of this array repeatedly between each sequence of extracted elements, returning the results as a single array
+    // map = http://www.raywenderlich.com/82599/swift-functional-programming-tutorial
+    func showSHack () -> String? {
+        return " ".join(opStack.map{ "\($0)"})
+    }
+    
+    
+    func ClearOpStack() {
+        opStack = []
+    }
+    
+    
+   
+    
+    
+    
     
     
 }//CalculatorBrain

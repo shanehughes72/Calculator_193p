@@ -22,6 +22,7 @@ class ViewController: UIViewController
     var brain = CalculatorBrain()
 
   
+    @IBOutlet weak var history: UILabel!
 
 
     @IBAction func appendDigit(sender: UIButton) {
@@ -33,6 +34,7 @@ class ViewController: UIViewController
         } else {
             display.text = digit
             userIsInTheMiddleOfTypingANumber = true
+            history.text = brain.showSHack()
         }
     }
     
@@ -42,6 +44,15 @@ class ViewController: UIViewController
         
         let operation = sender.currentTitle!
         if userIsInTheMiddleOfTypingANumber {
+            if operation == "±" {
+                let displayText = display.text!
+                if (displayText.rangeOfString("-") != nil){
+                    display.text = dropFirst(displayText)
+                } else {
+                    display.text = "-" + displayText
+                }
+                return
+            }
             enter()
         }
         
@@ -106,18 +117,54 @@ class ViewController: UIViewController
                     return displayNumber.doubleValue
                 }
             }
+            
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
             
             
         }
-        set{
+        set {
             display.text = "\(newValue)"
+            if let stack = brain.showSHack(){
+                if !stack.isEmpty{
+                    history.text = stack + " ="
+                }
+            }
+            
             userIsInTheMiddleOfTypingANumber = false
             
         }
         
         
     }
+    
+    
+    @IBAction func clear() {
+        
+        brain = CalculatorBrain()
+        displayValue = 0
+        history.text = " "
+    }
+    
+    
+    
+    //func count<T : _CollectionType>(x: T) -> T.Index.Distance
+    //Description
+    //Return the number of elements in x.
+    //O(1) if T.Index is RandomAccessIndexType; O(N) otherwise.
+    @IBAction func backSpace() {
+        
+        if userIsInTheMiddleOfTypingANumber {
+            let displayText = display.text!
+            if count(displayText) > 1 {
+                display.text = dropLast(displayText)
+            } else {
+                display.text = "0"
+            }
+        }
+        
+    }
+    
+ 
 
 
 }//ViewController
