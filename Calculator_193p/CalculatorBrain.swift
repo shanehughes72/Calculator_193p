@@ -66,8 +66,54 @@ class CalculatorBrain
     // old skool declaration
     var variableValues = Dictionary<String,Double>()
     
+    //Implement a new read-only (get only, no set) var to CalculatorBrain 
+    //to describe the contents of the brain as a String
+    var description: String{
+        get {
+            var (result, ops) = (" ", opStack)
+            do {
+            var current: String?
+            (current, ops ) = description(ops)
+            result = result == "" ? current! : "\(current!), \(result)"
+            
+            } while ops.count > 0
+            return result
+        }
+    }
     
     
+    private func description(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        if !ops.isEmpty {
+            var remainingOps = ops
+            let op = remainingOps.removeLast()
+            switch op {
+            case .Operand(let operand):
+                return (String(format: "%g", operand) , remainingOps)
+            case .NullaryOperation(let symbol, _):
+                return (symbol, remainingOps);
+            case .UnaryOperation(let symbol, _):
+                let operandEvaluation = description(remainingOps)
+                if let operand = operandEvaluation.result {
+                    return ("\(symbol)(\(operand))", operandEvaluation.remainingOps)
+                }
+            case .BinaryOperation(let symbol, _):
+                let op1Evaluation = description(remainingOps)
+                if var operand1 = op1Evaluation.result {
+                    if remainingOps.count - op1Evaluation.remainingOps.count > 2 {
+                        operand1 = "(\(operand1))"
+                    }
+                    let op2Evaluation = description(op1Evaluation.remainingOps)
+                    if let operand2 = op2Evaluation.result {
+                        return ("\(operand2) \(symbol) \(operand1)", op2Evaluation.remainingOps)
+                    }
+                }
+            case .Variable(let symbol):
+                return (symbol, remainingOps)
+            }
+        }
+        return ("?", ops)
+    }
+
     
     
     
@@ -129,6 +175,15 @@ class CalculatorBrain
         
         
     }//init
+    
+    
+    
+    
+    
+    
+    
+    
+    
                 // all arguments have the implicit let - there
                 // is a in-out thing to look up
                 // can put var in front of argument if needed
@@ -175,7 +230,7 @@ class CalculatorBrain
                 return (operation(), remainingOps)
                 
             case .Variable(let symbol):
-                return (nil, remainingOps)
+                return (variableValues[symbol], remainingOps)
 
                 
             }//switch
@@ -193,6 +248,9 @@ class CalculatorBrain
     func evaluate() -> Double? {
         
         //different way ( than evaluate func does ) to return a tuple:
+        // calling the above evaluate passing in the whole opStack
+        // returns result ( we have remainder for variable purposes )
+        // opStack is untouched is passed by value and not consumed
         let (result, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder) left over")
         return result
@@ -239,6 +297,29 @@ class CalculatorBrain
     
     
     
+    //read up on XCT
+    //func testPushOperandVariable() {
+    //var brain = CalculatorBrain()
+    //    XCTAssertNil(brain.pushOperand("x"))
+    //    XCTAssertEqual(brain.program[0] as String, "x")
+    //}
+    
+    
+    
+    
+    func popOperand() -> Double? {
+        if !opStack.isEmpty {
+            opStack.removeLast()
+        }
+        
+        return evaluate()
+    }
+   
     
     
 }//CalculatorBrain
+
+
+
+
+

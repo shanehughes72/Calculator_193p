@@ -34,7 +34,7 @@ class ViewController: UIViewController
         } else {
             display.text = digit
             userIsInTheMiddleOfTypingANumber = true
-            history.text = brain.showSHack()
+            history.text = brain.description != "?" ? brain.description : ""
         }
     }
     
@@ -129,7 +129,7 @@ class ViewController: UIViewController
             
             if let stack = brain.showSHack(){
                 if !stack.isEmpty{
-                    history.text = stack + " ="
+                    history.text = brain.description + " ="
                 }
             }
             
@@ -161,13 +161,47 @@ class ViewController: UIViewController
             if count(displayText) > 1 {
                 display.text = dropLast(displayText)
             } else {
-                display.text = "0"
+                if let result = brain.popOperand()  {
+                    displayValue = result
+                    
+                } else {
+                    displayValue = nil 
+                }
             }
         }
         
     }
     
- 
+    
+    @IBAction func storeVariable(sender: UIButton){
+        if let variable = last(sender.currentTitle!){
+            if displayValue != nil{
+                brain.variableValues["\(variable)"] = displayValue
+                if let result = brain.evaluate() {
+                    displayValue = result
+                }
+                else {
+                    displayValue = nil
+                }
+            }
+        }
+    }
+    
+    
+    @IBAction func pushButton(sender: UIButton) {
+        if userIsInTheMiddleOfTypingANumber {
+            enter()
+        }
+        if let result = brain.pushOperand(sender.currentTitle!){
+                displayValue = result
+        } else {
+            displayValue = nil
+        }
+    }
+    
+    
+        
+
 
 
 }//ViewController
