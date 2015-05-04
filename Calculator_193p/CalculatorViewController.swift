@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController
+class CalculatorViewController: UIViewController
 {
 
     @IBOutlet weak var display: UILabel!
@@ -18,8 +18,12 @@ class ViewController: UIViewController
     //The colon in the declaration means “…of type…,” so the code above can be read as:
     //“Declare a variable called display that is of type Boolean.”
     
+   
+    
+    //Neither of your MVCs in this assignment is allowed to have CalculatorBrain 
+    //appear anywhere in its non-private API.
     //green arrow that goes from the controller to the model
-    var brain = CalculatorBrain()
+    private var brain = CalculatorBrain()
 
   
     @IBOutlet weak var history: UILabel!
@@ -200,6 +204,28 @@ class ViewController: UIViewController
     }
     
     
+    
+    
+    
+    
+    //Prepare for the segue firing when the graph button gets pressed. For the “normal” iPhone view the destination of the segue is its designated destination view controller, for the split view it is the visible view controller of the second navigation view controller. If the destination is the graph view controller and the segue is the one originating from the graph button set the new title. To get the last part of the description of the current program, create an array of its parts and use only the last one:
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var destination = segue.destinationViewController as? UIViewController
+        if let nc = destination as? UINavigationController {
+            destination = nc.visibleViewController
+        }
+        if let gvc = destination as? GraphViewController {
+            if let identifier = segue.identifier {
+                switch identifier {
+                case "plot graph":
+                    gvc.title = brain.description == "" ? "Graph" :
+                        brain.description.componentsSeparatedByString(", ").last
+                default:
+                    break
+                }
+            }
+        }
+    }
         
 
 
